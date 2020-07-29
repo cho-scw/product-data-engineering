@@ -1,3 +1,4 @@
 # Productboard Customer Feedback ETL
 
-Please refer to the Jupyter Notebook for instructions.
+1. Please refer to the Jupyter Notebook for instructions on the ETL.
+1. ETL technical document can be found [here](https://securecodewarrior.atlassian.net/l/c/RpmTPha3).
