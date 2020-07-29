@@ -1,3 +1,3 @@
 # Productboard Customer Feedback ETL
 
-> To be continued..
+Requirements are in the Jupyter Notebook..
