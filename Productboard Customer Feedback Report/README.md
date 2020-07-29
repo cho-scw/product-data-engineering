@@ -1,3 +1,3 @@
 # Productboard Customer Feedback ETL
 
-Instructions/requirements are in the Jupyter Notebook for the time being..
+Please refer to the Jupyter Notebook for instructions.
