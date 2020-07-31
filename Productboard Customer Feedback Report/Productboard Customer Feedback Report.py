@@ -4,10 +4,22 @@
 # In[1]:
 
 
+print('## Initialising Productboard Customer Feedback Report ETL..')
+
+
+# In[1]:
+
+
 import os
 import pandas as pd
 import pandasql as psql
 import numpy as np
+
+
+# In[2]:
+
+
+print('## Collecting Raw Data Files..')
 
 
 # # Create Path & Collect Files
@@ -80,6 +92,12 @@ dfChurnZeroRaw = pd.read_csv(FilePathChurnZero)
 # # JOIN Key(s):
 # 
 # Productboard.company_name -> ChurnZero.Name
+
+# In[3]:
+
+
+print('## Creating Transformed Dataset & Creating Custom Attributions..')
+
 
 # # Create Tall Table for Tags from Productboard Raw Data
 
@@ -255,7 +273,16 @@ dfDataExport['TimeStamp'] = pd.to_datetime('now')
 # In[17]:
 
 
-dfDataExport.to_csv(os.path.join(ExportFolderLocation,'Productboard Customer Feedback Data Export Test.csv') , index=False)
+FilePathExportedFile = os.path.join(ExportFolderLocation,'Productboard Customer Feedback Data Export Test.csv')
+dfDataExport.to_csv(FilePathExportedFile, index=False)
+
+
+# In[4]:
+
+
+print(f'## Transformed raw data exported to: {FilePathExportedFile}.')
+print('## Please upload this to Google Data Studio..\n')
+print('## END..')
 
 
 # # Data QC Checks
