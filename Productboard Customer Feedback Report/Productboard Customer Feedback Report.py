@@ -96,7 +96,7 @@ dfChurnZeroRaw = pd.read_csv(FilePathChurnZero)
 # In[3]:
 
 
-print('## Creating Transformed Dataset & Creating Custom Attributions..')
+print('## Creating Transformed Dataset & Creating Custom Attributes..')
 
 
 # # Create Tall Table for Tags from Productboard Raw Data
@@ -124,6 +124,59 @@ dfProductboardTransformed = dfProductboardRaw.drop(['tags','source_id','source_u
 
 #drop note_text column as it can take up too much space
 dfProductboardTransformed = dfProductboardTransformed.drop('note_text',axis=1)
+
+
+# # Create Themes
+# 
+# To allow reporting on Themes.
+# 
+# > The expected tags in the data will be `Theme![Theme Description]`
+
+# In[ ]:
+
+
+dfProductboardTransformed['TagsLower'] = dfProductboardTransformed.tags.str.lower()
+
+targetAttribute = 'Theme!'
+
+dfProductboardTransformed['IsTheme'] = np.select(
+    [
+        dfProductboardTransformed.TagsLower.str[:len(targetAttribute)] == targetAttribute.lower()
+    ],
+    [
+        True
+    ],
+    default = False
+)
+
+dfProductboardTransformed['Theme'] = np.select(
+    [
+        dfProductboardTransformed.IsTheme == True
+    ],
+    [
+        dfProductboardTransformed.tags.str[len(targetAttribute):]
+    ],
+    default = np.NaN
+)
+
+df = dfProductboardTransformed.loc[dfProductboardTransformed.IsTheme == True]
+df = df[['id','IsTheme','Theme']]
+
+df = df.rename(columns={
+    'IsTheme':'IsThemeReportingFlag',
+    }
+)
+
+
+# In[ ]:
+
+
+dfProductboardTransformed = dfProductboardTransformed.drop(['Theme','TagsLower'],axis=1).merge(df, how = 'left', left_on='id', right_on='id')
+
+dfProductboardTransformed.IsThemeReportingFlag = dfProductboardTransformed.IsThemeReportingFlag.fillna(False)
+
+#To Exclude Themes in the original Tags field to avoid double reporting.
+dfProductboardTransformed= dfProductboardTransformed.loc[dfProductboardTransformed.IsTheme==False].drop(['IsTheme'],axis=1)
 
 
 # # Calculate Day Difference of when Insights were submitted vs Today
@@ -273,7 +326,7 @@ dfDataExport['TimeStamp'] = pd.to_datetime('now')
 # In[17]:
 
 
-FilePathExportedFile = os.path.join(ExportFolderLocation,'Productboard Customer Feedback Data Export Test.csv')
+FilePathExportedFile = os.path.join(ExportFolderLocation,'Productboard Customer Feedback Data Export.csv')
 dfDataExport.to_csv(FilePathExportedFile, index=False)
 
 
